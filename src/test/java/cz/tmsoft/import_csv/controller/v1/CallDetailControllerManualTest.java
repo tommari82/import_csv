@@ -3,7 +3,7 @@ package cz.tmsoft.import_csv.controller.v1;
 import cz.tmsoft.import_csv.api.v1.CallCountRest;
 import cz.tmsoft.import_csv.api.v1.CallDetailRecordRest;
 import cz.tmsoft.import_csv.api.v1.CallFilterRest;
-import cz.tmsoft.import_csv.api.v1.UploadFileResponseApi;
+import cz.tmsoft.import_csv.api.v1.UploadFileResponseRest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -20,8 +20,9 @@ import org.springframework.util.MultiValueMap;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -51,7 +52,7 @@ class CallDetailControllerManualTest {
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
         String serverUrl = "http://localhost:" + port + "/api/v1/import/uploadFile";
-        ResponseEntity<UploadFileResponseApi> response = restTemplate.postForEntity(serverUrl, requestEntity, UploadFileResponseApi.class);
+        ResponseEntity<UploadFileResponseRest> response = restTemplate.postForEntity(serverUrl, requestEntity, UploadFileResponseRest.class);
 
     }
 
@@ -73,25 +74,25 @@ class CallDetailControllerManualTest {
     @Test
     void getCountOfCall() {
 
-        String url = "http://localhost:" + port + "/api/v1/call/";
-        CallFilterRest request = new CallFilterRest();
-        request.setStartTime("01.08.2016 00:00:00");
-        request.setEndTime("30.08.2016 00:00:00");
+        String url = "http://localhost:" + port + "/api/v1/call/?startTime={startTime}&endTime={endTime}";
+        Map<String, Object> params = new HashMap<>();
+        params.put("startTime", "01.08.2016 00:00:00");
+        params.put("endTime", "30.08.2016 00:00:00");
 
-        ResponseEntity<CallCountRest> response = restTemplate.postForEntity(url, request, CallCountRest.class);
+        ResponseEntity<CallCountRest> response = restTemplate.getForEntity(url, CallCountRest.class, params);
 
         assertTrue(response.getStatusCode() == HttpStatus.OK);
     }
 
     @Test
     void getCallDetailForCaller() {
-        String url = "http://localhost:" + port + "/api/v1/call/441910000000";
+        String url = "http://localhost:" + port + "/api/v1/call/caller/441910000000?startTime={startTime}&endTime={endTime}";
 
-        CallFilterRest request = new CallFilterRest();
-        request.setStartTime("01.08.2016 00:00:00");
-        request.setEndTime("30.08.2016 00:00:00");
+        Map<String, Object> params = new HashMap<>();
+        params.put("startTime", "01.08.2016 00:00:00");
+        params.put("endTime", "30.08.2016 00:00:00");
 
-        ResponseEntity<List> response = restTemplate.postForEntity(url, request, List.class);
+        ResponseEntity<CallDetailRecordRest[]> response = restTemplate.getForEntity(url, CallDetailRecordRest[].class, params);
 
         assertTrue(response.getStatusCode() == HttpStatus.OK);
 
@@ -100,13 +101,13 @@ class CallDetailControllerManualTest {
     @Test
     void testGetCallDetailForCaller() {
 
-        String url = "http://localhost:" + port + "/api/v1/call/441910000000/2";
+        String url = "http://localhost:" + port + "/api/v1/call/caller/441910000000/2?startTime={startTime}&endTime={endTime}";
 
-        CallFilterRest request = new CallFilterRest();
-        request.setStartTime("01.08.2016 00:00:00");
-        request.setEndTime("30.08.2016 00:00:00");
+        Map<String, Object> params = new HashMap<>();
+        params.put("startTime", "01.08.2016 00:00:00");
+        params.put("endTime", "30.08.2016 00:00:00");
 
-        ResponseEntity<List> response = restTemplate.postForEntity(url, request, List.class);
+        ResponseEntity<CallDetailRecordRest[]> response = restTemplate.getForEntity(url, CallDetailRecordRest[].class, params);
 
         assertTrue(response.getStatusCode() == HttpStatus.OK);
     }

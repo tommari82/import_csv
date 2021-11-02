@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class UploadFileResponseApi {
+public class UploadFileResponseRest {
 
     @ApiModelProperty(notes = "Name of imported file")
     private String fileName;

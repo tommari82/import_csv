@@ -1,6 +1,6 @@
 package cz.tmsoft.import_csv.controller.v1;
 
-import cz.tmsoft.import_csv.api.v1.UploadFileResponseApi;
+import cz.tmsoft.import_csv.api.v1.UploadFileResponseRest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,7 +13,6 @@ import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import javax.validation.constraints.AssertTrue;
 import java.io.File;
 import java.io.IOException;
 
@@ -44,7 +43,7 @@ class ImportControllerManualTest {
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
         String serverUrl = "http://localhost:" + port + "/api/v1/import/uploadFile";
-        ResponseEntity<UploadFileResponseApi> response = restTemplate.postForEntity(serverUrl, requestEntity, UploadFileResponseApi.class);
+        ResponseEntity<UploadFileResponseRest> response = restTemplate.postForEntity(serverUrl, requestEntity, UploadFileResponseRest.class);
         assertTrue(response.getStatusCode() == HttpStatus.OK);
     }
 

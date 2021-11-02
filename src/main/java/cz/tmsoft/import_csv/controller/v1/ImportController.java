@@ -1,6 +1,6 @@
 package cz.tmsoft.import_csv.controller.v1;
 
-import cz.tmsoft.import_csv.api.v1.UploadFileResponseApi;
+import cz.tmsoft.import_csv.api.v1.UploadFileResponseRest;
 import cz.tmsoft.import_csv.service.ImportServiceImpl;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -28,7 +28,7 @@ public class ImportController {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 415, message = "Unsupported media type")
     })
-    public ResponseEntity<UploadFileResponseApi> uploadFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<UploadFileResponseRest> uploadFile(@RequestParam("file") MultipartFile file) {
 
         if (file.getContentType().toLowerCase().compareTo("text/csv") != 0) {
             return new ResponseEntity("Unsupported media type", HttpStatus.UNSUPPORTED_MEDIA_TYPE);
@@ -36,6 +36,6 @@ public class ImportController {
 
         importService.importFile(file);
 
-        return ResponseEntity.status(HttpStatus.OK).body(UploadFileResponseApi.builder().fileName(file.getName()).fileType(file.getContentType()).size(file.getSize()).build());
+        return ResponseEntity.status(HttpStatus.OK).body(UploadFileResponseRest.builder().fileName(file.getName()).fileType(file.getContentType()).size(file.getSize()).build());
     }
 }
