@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Data
@@ -19,4 +20,6 @@ public class CallDetailRecord {
     private String reference;
     private String currency;
     private String type;
+    private LocalDateTime startDateTime;
+    private LocalDateTime endDateTime;
 }

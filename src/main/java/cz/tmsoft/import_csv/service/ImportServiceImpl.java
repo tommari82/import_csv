@@ -5,6 +5,7 @@ import com.opencsv.CSVReader;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.HeaderColumnNameTranslateMappingStrategy;
 import cz.tmsoft.import_csv.domain.CallDetail;
+import cz.tmsoft.import_csv.domain.CallDetailRecord;
 import cz.tmsoft.import_csv.mapper.ImportMapper;
 import cz.tmsoft.import_csv.repository.ImportRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -32,10 +33,20 @@ public class ImportServiceImpl {
         List<CallDetail> callDetailList = getCallDetails(file);
 
         for (CallDetail callDetail : callDetailList){
-            log.info(callDetail.toString());
-            importRepository.saveCallDetailRecord(ImportMapper.INSTANCE.map(callDetail));
-
+            try {
+                importRepository.saveCallDetailRecord(getCallRecord(callDetail));
+            }catch (NumberFormatException nfe){
+                log.warn("wrong number", nfe);
+            }
         }
+    }
+
+    private CallDetailRecord getCallRecord(CallDetail callDetail){
+        CallDetailRecord retVal = ImportMapper.INSTANCE.map(callDetail);
+
+        retVal.setStartDateTime(retVal.getCallDate().atTime(retVal.getEndTime()).minusSeconds(retVal.getDuration()));
+        retVal.setEndDateTime(retVal.getCallDate().atTime(retVal.getEndTime()));
+        return  retVal;
     }
 
     private List<CallDetail> getCallDetails(MultipartFile file) {
